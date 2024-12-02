@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project3/widgets/custom_scaffold.dart';
-import '../helper/show_snack_bar.dart';
+import 'package:project3/widgets/customformfeild.dart';
 import '../theme/theme.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
@@ -12,17 +12,17 @@ class ForgetPasswordScreen extends StatefulWidget {
 }
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
-  final _emailController = TextEditingController();
+  final emailController = TextEditingController();
   @override
   void dispose() {
-    _emailController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
   Future passwordReset() async {
     try {
       await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: _emailController.text.trim());
+          .sendPasswordResetEmail(email: emailController.text.trim());
       showDialog(
         context: context,
         builder: (context) {
@@ -37,7 +37,15 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            content: Text(e.message.toString()),
+            backgroundColor: lightColorScheme.primary,
+            // content: Text(e.message.toString()),
+            content: const Text(
+              'Please Enter your Email to resent password link',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25,
+              ),
+            ),
           );
         },
       );
@@ -66,46 +74,38 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   topRight: Radius.circular(40),
                 ),
               ),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 40,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Customformfeild(
+                      controller: emailController,
+                      hintText: 'Enter Email',
+                      labeltext: const Text('Email'),
+                      icon: Icons.email_sharp,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.black12,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.black12,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            hintText: 'Enter Email',
-                            labelText: 'Email',
-                            fillColor: Colors.grey[200],
-                            filled: true,
-                            suffixIcon: const Icon(Icons.email_sharp)),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  MaterialButton(
+                    
+                    shape: RoundedRectangleBorder(),
+                    onPressed: passwordReset,
+                    color: lightColorScheme.primary,
+                    child: const Text(
+                      'Reset Password',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
                       ),
                     ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    MaterialButton(
-                      onPressed: passwordReset,
-                      child: const Text('Reset Password'),
-                      color: lightColorScheme.primary,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           )

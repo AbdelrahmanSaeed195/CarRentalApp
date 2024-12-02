@@ -6,7 +6,10 @@ class Customformfeild extends StatelessWidget {
       this.icon,
       this.onChanged,
       this.hintText,
-      required this.labeltext, this.controller, this.keyboardtype, this.maxLength});
+      required this.labeltext,
+      this.controller,
+      this.keyboardtype,
+      this.maxLength});
   Function(String)? onChanged;
   String? hintText;
   final IconData? icon;
@@ -27,7 +30,6 @@ class Customformfeild extends StatelessWidget {
         }
         return null;
       },
-    
       decoration: InputDecoration(
         suffixIcon: Icon(
           icon,
