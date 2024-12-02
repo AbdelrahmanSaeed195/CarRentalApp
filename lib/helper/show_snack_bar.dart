@@ -5,5 +5,25 @@ void ShowSnakBar(BuildContext context, String message) {
     SnackBar(
       content: Text(message),
     ),
+
+  );
+}
+ void showErrorMessage(String message) {
+  var context;
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: Colors.deepPurple,
+        title: Center(
+          child: Text(
+            message,
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+    },
   );
 }

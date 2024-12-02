@@ -24,6 +24,25 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isloading = false;
   String? email, password;
   TextEditingController passwordController = TextEditingController();
+  void showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.deepPurple,
+          title: Center(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -115,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                      const  ForgetPasswordScreen(),
+                                        const ForgetPasswordScreen(),
                                   ),
                                 );
                               },
@@ -144,16 +163,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   await loginUser();
                                   ShowSnakBar(context, 'The email Login.');
                                 } on FirebaseAuthException catch (e) {
-                                  if (e.code == 'wrong-password') {
-                                    ShowSnakBar(context,
-                                        'Wrong password provided for that user.');
-                                  } else if (e.code == ' user-not-found') {
-                                    ShowSnakBar(context,
-                                        'No user found for that email.');
-                                  } else if (!rememberPassword) {
-                                    ShowSnakBar(context,
-                                        'please agree the processing of personal data ');
-                                  }
+                                  showErrorMessage(e.code);
+                                  // if (e.code == 'wrong-password') {
+                                  //   ShowSnakBar(context,
+                                  //       'Wrong password provided for that user.');
+                                  // } else if (e.code == ' user-not-found') {
+                                  //   ShowSnakBar(context,
+                                  //       'No user found for that email.');
+                                  // } else if (!rememberPassword) {
+                                  //   // ShowSnakBar(context,
+                                  //   //     'please agree the processing of personal data ');
+                                  //
+                                  // }
                                 } catch (e) {
                                   ShowSnakBar(context, 'there was an error');
                                 }

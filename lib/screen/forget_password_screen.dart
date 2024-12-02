@@ -69,14 +69,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Text(
-                      'Enter Your Email and we will send you a password reset link',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w900,
-                        color: lightColorScheme.primary,
-                      ),
-                    ),
                     const SizedBox(
                       height: 40,
                     ),

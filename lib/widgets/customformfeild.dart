@@ -6,14 +6,20 @@ class Customformfeild extends StatelessWidget {
       this.icon,
       this.onChanged,
       this.hintText,
-      required this.labeltext});
+      required this.labeltext, this.controller, this.keyboardtype, this.maxLength});
   Function(String)? onChanged;
   String? hintText;
   final IconData? icon;
   Widget labeltext;
+  final controller;
+  final keyboardtype;
+  final maxLength;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      maxLength: maxLength,
+      keyboardType: keyboardtype,
+      controller: controller,
       onChanged: onChanged,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -21,9 +27,7 @@ class Customformfeild extends StatelessWidget {
         }
         return null;
       },
-      // (data) {
-      //         email = data;
-      //       },
+    
       decoration: InputDecoration(
         suffixIcon: Icon(
           icon,

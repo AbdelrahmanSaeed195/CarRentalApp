@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:project3/screen/login_screen.dart';
 import 'package:project3/theme/theme.dart';
@@ -22,7 +21,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isloading = false;
   GlobalKey<FormState> formKey = GlobalKey();
   bool agreePersonalData = true;
-  TextEditingController passwordController = TextEditingController();
+  final fullNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmpasswordController = TextEditingController();
+  final idController = TextEditingController();
+  final phoneController = TextEditingController();
+  void showErrorMessage(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.deepPurple,
+          title: Center(
+            child: Text(
+              message,
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -37,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             Expanded(
-              flex: 7,
+              flex: 12,
               child: Container(
                 padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
                 decoration: const BoxDecoration(
@@ -64,15 +87,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           height: 40,
                         ),
                         Customformfeild(
+                          keyboardtype: TextInputType.text,
+                          controller: fullNameController,
                           hintText: 'Enter FullName',
                           labeltext: const Text('FullName'),
-
                           icon: Icons.perm_identity_sharp,
                         ),
                         const SizedBox(
-                          height: 25,
+                          height: 15,
                         ),
                         Customformfeild(
+                          keyboardtype: TextInputType.emailAddress,
+                          controller: emailController,
                           hintText: 'Enter Email',
                           labeltext: const Text('Email'),
                           onChanged: (data) {
@@ -81,7 +107,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           icon: Icons.email_sharp,
                         ),
                         const SizedBox(
-                          height: 25,
+                          height: 15,
+                        ),
+                        Customformfeild(
+                          maxLength: 11,
+                          keyboardtype: TextInputType.phone,
+                          controller: phoneController,
+                          hintText: 'Enter Phone',
+                          labeltext: const Text('Phone'),
+                          icon: Icons.phone,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Customformfeild(
+                          maxLength: 14,
+                          keyboardtype: TextInputType.number,
+                          controller: idController,
+                          hintText: 'Enter National Id',
+                          labeltext: const Text('Id'),
+                          icon: Icons.info,
+                        ),
+                        const SizedBox(
+                          height: 15,
                         ),
                         CustomPasswordField(
                           onChanged: (data) {
@@ -92,18 +140,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: passwordController,
                         ),
                         const SizedBox(
-                          height: 25,
+                          height: 15,
                         ),
                         CustomPasswordField(
-                          onChanged: (data) {
-                            password = data;
-                          },
-                          hintText:  'Enter Confirm Password',
+                          hintText: 'Enter Confirm Password',
                           labeltext: const Text('Confirm Password'),
-                          controller: passwordController,
+                          controller: confirmpasswordController,
                         ),
                         const SizedBox(
-                          height: 25,
+                          height: 20,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,79 +186,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: () async {
                               if (formKey.currentState!.validate() &&
                                   agreePersonalData) {
+                                setState(() {});
                                 isloading = true;
                                 setState(() {});
+
                                 try {
                                   await registerUser();
-                                  ShowSnakBar(context, 'The email success.');
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == 'weak-password') {
-                                    ShowSnakBar(context,
+                                    // ShowSnakBar(context,
+                                    //     'The password provided is too weak.');
+                                    showErrorMessage(
                                         'The password provided is too weak.');
                                   } else if (e.code == 'email-already-in-use') {
-                                    ShowSnakBar(context,
+                                    // ShowSnakBar(context,
+                                    //     'The account already exists for that email.');
+                                    showErrorMessage(
                                         'The account already exists for that email.');
-                                  } else if (!agreePersonalData) {
-                                    ShowSnakBar(context,
-                                        'please agree the processing of personal data');
                                   }
                                 } catch (e) {
                                   print(e);
-                                  ShowSnakBar(context, 'there was an error');
+                                  // ShowSnakBar(context, 'there was an error');
+                                  showErrorMessage('there was an error');
                                 }
                                 isloading = false;
                                 setState(() {});
+                              } else if (!agreePersonalData) {
+                                // ShowSnakBar(context,
+                                //     'please agree the processing of personal data');
+                                showErrorMessage(
+                                    'please agree the processing of personal data');
                               }
                             },
-                            child: const Text('Register'),
+                            child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Register')),
                           ),
                         ),
                         const SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 10,
-                              ),
-                              child: Text(
-                                'Register With',
-                                style: TextStyle(
-                                  color: Colors.black45,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Logo(Logos.facebook_f),
-                            Logo(Logos.twitter),
-                            Logo(Logos.google),
-                            Logo(Logos.apple),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 25,
+                          height: 15,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -254,7 +267,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> registerUser() async {
-    UserCredential user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email!, password: password!);
+    if (passwordController.text == confirmpasswordController.text) {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      // ShowSnakBar(context, 'The email success.');
+      showErrorMessage('The email success.');
+    } else {
+      // ShowSnakBar(context, 'Password don\'t match');
+      showErrorMessage('Password don\'t match');
+    }
   }
 }
