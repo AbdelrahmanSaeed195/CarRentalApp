@@ -6,8 +6,6 @@ import 'package:project3/screen/forget_password_screen.dart';
 import 'package:project3/screen/register_screen.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:project3/widgets/custom_scaffold.dart';
-
-import '../helper/show_snack_bar.dart';
 import '../widgets/custom_password_field.dart';
 import '../widgets/customformfeild.dart';
 
@@ -24,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isloading = false;
   String? email, password;
   TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   void showErrorMessage(String message) {
     showDialog(
       context: context,
@@ -85,6 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 40,
                         ),
                         Customformfeild(
+                          controller: emailController,
                           hintText: 'Enter Email',
                           labeltext: const Text('Email'),
                           onChanged: (data) {
@@ -161,26 +161,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                 setState(() {});
                                 try {
                                   await loginUser();
-                                  ShowSnakBar(context, 'The email Login.');
+                                  showErrorMessage('The email Login.');
+                                  // ShowSnakBar(context, 'The email Login.');
                                 } on FirebaseAuthException catch (e) {
                                   showErrorMessage(e.code);
                                   // if (e.code == 'wrong-password') {
-                                  //   ShowSnakBar(context,
+                                  //   showErrorMessage(
                                   //       'Wrong password provided for that user.');
                                   // } else if (e.code == ' user-not-found') {
-                                  //   ShowSnakBar(context,
+                                  //   showErrorMessage(
                                   //       'No user found for that email.');
                                   // } else if (!rememberPassword) {
-                                  //   // ShowSnakBar(context,
-                                  //   //     'please agree the processing of personal data ');
-                                  //
+                                  //   showErrorMessage(
+                                  //       'please agree the processing of personal data ');
                                   // }
                                 } catch (e) {
-                                  ShowSnakBar(context, 'there was an error');
+                                  showErrorMessage('there was an error');
                                 }
                                 isloading = false;
                                 setState(() {});
-                                // ShowSnakBar(context, 'Processing Data' );
                               }
                             },
                             child: const Text('Login'),

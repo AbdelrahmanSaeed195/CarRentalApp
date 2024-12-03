@@ -1,12 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:project3/screen/login_screen.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:project3/widgets/custom_password_field.dart';
 import 'package:project3/widgets/custom_scaffold.dart';
-
-import '../helper/show_snack_bar.dart';
 import '../widgets/customformfeild.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -28,23 +25,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final idController = TextEditingController();
   final phoneController = TextEditingController();
   void showErrorMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.deepPurple,
-          title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        backgroundColor: Colors.deepPurple,
+        title: Center(
+          child: Text(
+            message,
+            style: const TextStyle(
+              color: Colors.white,
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +57,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             Expanded(
-              flex: 12,
+              flex: 14,
               child: Container(
                 padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
                 decoration: const BoxDecoration(

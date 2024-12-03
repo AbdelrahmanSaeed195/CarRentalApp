@@ -4,11 +4,11 @@ class CustomPasswordField extends StatefulWidget {
   CustomPasswordField(
       {super.key,
       this.onChanged,
-       this.controller,
+      required this.controller,
       this.hintText,
       required this.labeltext});
   Function(String)? onChanged;
-  final  controller;
+  final TextEditingController  controller;
   String? hintText;
   TextEditingController confirmpasswordController = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();

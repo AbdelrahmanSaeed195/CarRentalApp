@@ -7,14 +7,14 @@ class Customformfeild extends StatelessWidget {
       this.onChanged,
       this.hintText,
       required this.labeltext,
-      this.controller,
+      required this.controller,
       this.keyboardtype,
       this.maxLength});
   Function(String)? onChanged;
   String? hintText;
   final IconData? icon;
   Widget labeltext;
-  final controller;
+  final TextEditingController controller;
   final keyboardtype;
   final maxLength;
   @override
