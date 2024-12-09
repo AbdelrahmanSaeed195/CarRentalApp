@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:project3/screen/forget_password_screen.dart';
+import 'package:project3/screen/home_screen.dart';
 import 'package:project3/screen/register_screen.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:project3/widgets/custom_scaffold.dart';
@@ -12,6 +13,7 @@ import '../widgets/customformfeild.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  static String id = "login Screen";
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -57,213 +59,217 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Expanded(
               flex: 7,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    ),
                   ),
-                ),
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w900,
-                            color: lightColorScheme.primary,
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900,
+                              color: lightColorScheme.primary,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Customformfeild(
-                          controller: emailController,
-                          hintText: 'Enter Email',
-                          labeltext: const Text('Email'),
-                          onChanged: (data) {
-                            email = data;
-                          },
-                          icon: Icons.email_sharp,
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        CustomPasswordField(
-                          onChanged: (data) {
-                            password = data;
-                          },
-                          hintText: 'Enter Password',
-                          labeltext: const Text(' Password'),
-                          controller: passwordController,
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: rememberPassword,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      rememberPassword = value!;
-                                    });
-                                  },
-                                  activeColor: lightColorScheme.primary,
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Customformfeild(
+                            controller: emailController,
+                            hintText: 'Enter Email',
+                            labeltext: const Text('Email'),
+                            onChanged: (data) {
+                              email = data;
+                            },
+                            icon: Icons.email_sharp,
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          CustomPasswordField(
+                            onChanged: (data) {
+                              password = data;
+                            },
+                            hintText: 'Enter Password',
+                            labeltext: const Text(' Password'),
+                            controller: passwordController,
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: rememberPassword,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        rememberPassword = value!;
+                                      });
+                                    },
+                                    activeColor: lightColorScheme.primary,
+                                  ),
+                                  const Text(
+                                    'Remember me',
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgetPasswordScreen(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Forget Password',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: lightColorScheme.primary,
+                                  ),
                                 ),
-                                const Text(
-                                  'Remember me',
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (formKey.currentState!.validate() &&
+                                    rememberPassword) {
+                                  isloading = true;
+                                  setState(() {});
+                                  try {
+                                    await loginUser();
+                                    Navigator.pushNamed(context, HomeScreen.id);
+                                    // showErrorMessage('The email Login.');
+                                    // ShowSnakBar(context, 'The email Login.');
+                                  } on FirebaseAuthException catch (e) {
+                                    showErrorMessage(e.code);
+                                    // if (e.code == 'wrong-password') {
+                                    //   showErrorMessage(
+                                    //       'Wrong password provided for that user.');
+                                    // } else if (e.code == ' user-not-found') {
+                                    //   showErrorMessage(
+                                    //       'No user found for that email.');
+                                    // } else if (!rememberPassword) {
+                                    //   showErrorMessage(
+                                    //       'please agree the processing of personal data ');
+                                    // }
+                                  } catch (e) {
+                                    showErrorMessage('there was an error');
+                                  }
+                                  isloading = false;
+                                  setState(() {});
+                                }
+                              },
+                              child: const Text('Login'),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  thickness: 0.7,
+                                  color: Colors.grey.withOpacity(0.5),
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 0,
+                                  horizontal: 10,
+                                ),
+                                child: Text(
+                                  'Register With',
                                   style: TextStyle(
                                     color: Colors.black45,
                                   ),
                                 ),
-                              ],
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ForgetPasswordScreen(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'Forget Password',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: lightColorScheme.primary,
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  thickness: 0.7,
+                                  color: Colors.grey.withOpacity(0.5),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (formKey.currentState!.validate() &&
-                                  rememberPassword) {
-                                isloading = true;
-                                setState(() {});
-                                try {
-                                  await loginUser();
-                                  showErrorMessage('The email Login.');
-                                  // ShowSnakBar(context, 'The email Login.');
-                                } on FirebaseAuthException catch (e) {
-                                  showErrorMessage(e.code);
-                                  // if (e.code == 'wrong-password') {
-                                  //   showErrorMessage(
-                                  //       'Wrong password provided for that user.');
-                                  // } else if (e.code == ' user-not-found') {
-                                  //   showErrorMessage(
-                                  //       'No user found for that email.');
-                                  // } else if (!rememberPassword) {
-                                  //   showErrorMessage(
-                                  //       'please agree the processing of personal data ');
-                                  // }
-                                } catch (e) {
-                                  showErrorMessage('there was an error');
-                                }
-                                isloading = false;
-                                setState(() {});
-                              }
-                            },
-                            child: const Text('Login'),
+                            ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 0,
-                                horizontal: 10,
-                              ),
-                              child: Text(
-                                'Register With',
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Logo(Logos.facebook_f),
+                              Logo(Logos.twitter),
+                              Logo(Logos.google),
+                              Logo(Logos.apple),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'Don\'t have an account? ',
                                 style: TextStyle(
                                   color: Colors.black45,
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                thickness: 0.7,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Logo(Logos.facebook_f),
-                            Logo(Logos.twitter),
-                            Logo(Logos.google),
-                            Logo(Logos.apple),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              'Don\'t have an account? ',
-                              style: TextStyle(
-                                color: Colors.black45,
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RegisterScreen()),
-                                );
-                              },
-                              child: Text(
-                                'Register',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: lightColorScheme.primary,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RegisterScreen()),
+                                  );
+                                },
+                                child: Text(
+                                  'Register',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: lightColorScheme.primary,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20.0,
-                        ),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20.0,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

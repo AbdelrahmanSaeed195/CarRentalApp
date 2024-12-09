@@ -7,7 +7,7 @@ import 'package:project3/widgets/custom_scaffold.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
-
+  static String id = "Welcome Screen";
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(

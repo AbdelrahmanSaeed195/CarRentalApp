@@ -93,7 +93,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     height: 40,
                   ),
                   MaterialButton(
-                    shape: RoundedRectangleBorder(),
+                    shape: const RoundedRectangleBorder(),
                     onPressed: passwordReset,
                     color: lightColorScheme.primary,
                     child: const Text(
