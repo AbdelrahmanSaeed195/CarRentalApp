@@ -3,15 +3,14 @@ import 'package:project3/data.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:project3/widgets/bottom_bar.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
-  static String id = "ProfileScreen";
+class CalendarScreen extends StatefulWidget {
+  const CalendarScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<CalendarScreen> createState() => _CalendarScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _CalendarScreenState extends State<CalendarScreen> {
   final List<NavigationItem> navigationItems = getNavigationItemList();
   NavigationItem? selectedItem;
 
@@ -19,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     setState(() {
-      selectedItem = navigationItems[3];
+      selectedItem = navigationItems[1];
     });
   }
 
@@ -39,7 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body:const Center(
         child: Text(
-          'Profile Screen',
+          'Calender Screen',
           style: TextStyle(
             fontSize: 25,
           ),

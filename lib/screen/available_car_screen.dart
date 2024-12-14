@@ -15,30 +15,28 @@ class AvailableCarScreen extends StatefulWidget {
 class _AvailableCarScreenState extends State<AvailableCarScreen> {
   List<Filter> filters = getFilterList();
   Filter? selectedfilter;
-  List<Car> filteredCars = getCarList();
+  // List<Car> filteredCars = getCarList();
+  List<Car> allCars = getCarList();
+  late List<Car> filteredCars;
 
   @override
   void initState() {
     super.initState();
-    setState(
-      () {
-        selectedfilter = null;
-        filteredCars = applyFilter(getCarList(), selectedfilter);
-      },
-    );
+    filteredCars = allCars;
   }
 
   List<Car> applyFilter(List<Car> cars, Filter? filter) {
     if (filter == null) return cars;
+
     switch (filter.name) {
       case "Best Match":
-        return cars;
+        return List.from(cars);
       case "Highest Price":
         cars.sort((a, b) => b.price.compareTo(a.price));
-        return cars;
+        return List.from(cars);
       case "Lowest Price":
         cars.sort((a, b) => a.price.compareTo(b.price));
-        return cars;
+        return List.from(cars);
       default:
         return cars;
     }
@@ -49,93 +47,101 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: SafeArea(
-        child: Container(
-          width: double.infinity,
+        child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: 45,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                    border: Border.all(
-                      color: const Color(0xFFE0E0E0),
-                      width: 1,
-                    ),
-                  ),
-                  child: const Icon(
-                    Icons.keyboard_arrow_left,
-                    color: Colors.black,
-                    size: 28,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Text(
-                "Available Cars (${getCarList().length})",
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Expanded(
-                child: GridView.count(
-                  physics: const BouncingScrollPhysics(),
-                  childAspectRatio: 1 / 1.7,
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                  children: filteredCars.map((item) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookCarScreen(
-                              car: item,
-                            ),
-                          ),
-                        );
-                      },
-                      child: buildCar(item, 1),
-                    );
-                  }).toList(),
-                ),
-              ),
+              _buildBackButton(context),
+              const SizedBox(height: 16),
+              _buildTitle(),
+              const SizedBox(height: 16),
+              _buildCarGrid(context),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          height: 100,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
-          child: Row(
-            children: [
-              buildFilterIcon(),
-              Row(
-                children: buildFilters(),
-              )
-            ],
-          ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  SingleChildScrollView _buildBottomNavigationBar() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Container(
+        height: 100,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Row(
+          children: [
+            buildFilterIcon(),
+            Row(
+              children: filters.map((filter) => _buildFilter(filter)).toList(),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildCarGrid(BuildContext context) {
+    return Expanded(
+      child: GridView.builder(
+        physics: const BouncingScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 15,
+          mainAxisSpacing: 15,
+          childAspectRatio: 1 / 1.7,
+        ),
+        itemCount: filteredCars.length,
+        itemBuilder: (context, index) {
+          final car = filteredCars[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BookCarScreen(car: car),
+                ),
+              );
+            },
+            child: buildCar(car, 1),
+          );
+        },
+      ),
+    );
+  }
+
+  Text _buildTitle() {
+    return Text(
+      "Available Cars (${allCars.length})",
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  GestureDetector _buildBackButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      child: Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+        ),
+        child: const Icon(
+          Icons.keyboard_arrow_left,
+          color: Colors.black,
+          size: 28,
         ),
       ),
     );
@@ -148,9 +154,7 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
           color: lightColorScheme.primary,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(15),
-          )),
+          borderRadius: const BorderRadius.all(Radius.circular(15))),
       child: const Center(
         child: Icon(
           Icons.filter_list,
@@ -161,20 +165,12 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
     );
   }
 
-  List<Widget> buildFilters() {
-    List<Widget> list = [];
-    for (var i = 0; i < filters.length; i++) {
-      list.add(buildFilter(filters[i]));
-    }
-    return list;
-  }
-
-  Widget buildFilter(Filter filter) {
+  Widget _buildFilter(Filter filter) {
     return GestureDetector(
       onTap: () {
         setState(() {
           selectedfilter = filter;
-          filteredCars = applyFilter(getCarList(), selectedfilter);
+          filteredCars = applyFilter(allCars, selectedfilter);
         });
       },
       child: Padding(
