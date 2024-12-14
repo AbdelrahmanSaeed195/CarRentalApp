@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:icons_plus/icons_plus.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:project3/helper/show_Message.dart';
 import 'package:project3/screen/forget_password_screen.dart';
 import 'package:project3/screen/home_screen.dart';
 import 'package:project3/screen/register_screen.dart';
@@ -25,24 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String? email, password;
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  void showErrorMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.deepPurple,
-          title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,19 +152,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                     // showErrorMessage('The email Login.');
                                     // ShowSnakBar(context, 'The email Login.');
                                   } on FirebaseAuthException catch (e) {
-                                    showErrorMessage(e.code);
+                                    showMessage(context,e.code);
                                     // if (e.code == 'wrong-password') {
-                                    //   showErrorMessage(
-                                    //       'Wrong password provided for that user.');
+                                    //  showErrorMessage('Wrong password provided for that user.');
                                     // } else if (e.code == ' user-not-found') {
-                                    //   showErrorMessage(
-                                    //       'No user found for that email.');
-                                    // } else if (!rememberPassword) {
-                                    //   showErrorMessage(
-                                    //       'please agree the processing of personal data ');
+                                    // showErrorMessage(
+                                    //     'No user found for that email.');
                                     // }
                                   } catch (e) {
-                                    showErrorMessage('there was an error');
+                                    showMessage(context,'there was an error');
                                   }
                                   isloading = false;
                                   setState(() {});
@@ -193,46 +172,66 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(
                             height: 25,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Divider(
-                                  thickness: 0.7,
-                                  color: Colors.grey.withOpacity(0.5),
-                                ),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: 10,
-                                ),
-                                child: Text(
-                                  'Register With',
-                                  style: TextStyle(
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: Divider(
-                                  thickness: 0.7,
-                                  color: Colors.grey.withOpacity(0.5),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Logo(Logos.facebook_f),
-                              Logo(Logos.twitter),
-                              Logo(Logos.google),
-                              Logo(Logos.apple),
-                            ],
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     Expanded(
+                          //       child: Divider(
+                          //         thickness: 0.7,
+                          //         color: Colors.grey.withOpacity(0.5),
+                          //       ),
+                          //     ),
+                          //     const Padding(
+                          //       padding: EdgeInsets.symmetric(
+                          //         vertical: 0,
+                          //         horizontal: 10,
+                          //       ),
+                          //       child: Text(
+                          //         'Register With',
+                          //         style: TextStyle(
+                          //           color: Colors.black45,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     Expanded(
+                          //       child: Divider(
+                          //         thickness: 0.7,
+                          //         color: Colors.grey.withOpacity(0.5),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(
+                          //   height: 25,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //   children: [
+                          //     Logo(Logos.facebook_f),
+                          //     Logo(Logos.google),
+                          //     Logo(Logos.apple),
+                          //   ],
+                          // ),
+                          MaterialButton(
+                            height: 60,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            color: lightColorScheme.primary,
+                            textColor: Colors.white,
+                            onPressed: () {
+                              signInWithGoogle();
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('Login With Google  '),
+                                Image.asset(
+                                  'assets/images/google.jpeg',
+                                  width: 30,
+                                )
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             height: 25,
@@ -284,5 +283,27 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> loginUser() async {
     UserCredential user = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email!, password: password!);
+  }
+
+  Future signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      return;
+    }
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    await FirebaseAuth.instance.signInWithCredential(credential);
+    Navigator.pushNamed(context, HomeScreen.id);
   }
 }

@@ -15,15 +15,33 @@ class AvailableCarScreen extends StatefulWidget {
 class _AvailableCarScreenState extends State<AvailableCarScreen> {
   List<Filter> filters = getFilterList();
   Filter? selectedfilter;
+  List<Car> filteredCars = getCarList();
 
   @override
   void initState() {
     super.initState();
     setState(
       () {
-        selectedfilter = filters[0];
+        selectedfilter = null;
+        filteredCars = applyFilter(getCarList(), selectedfilter);
       },
     );
+  }
+
+  List<Car> applyFilter(List<Car> cars, Filter? filter) {
+    if (filter == null) return cars;
+    switch (filter.name) {
+      case "Best Match":
+        return cars;
+      case "Highest Price":
+        cars.sort((a, b) => b.price.compareTo(a.price));
+        return cars;
+      case "Lowest Price":
+        cars.sort((a, b) => a.price.compareTo(b.price));
+        return cars;
+      default:
+        return cars;
+    }
   }
 
   @override
@@ -82,7 +100,7 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 15,
                   mainAxisSpacing: 15,
-                  children: getCarList().map((item) {
+                  children: filteredCars.map((item) {
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -156,6 +174,7 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
       onTap: () {
         setState(() {
           selectedfilter = filter;
+          filteredCars = applyFilter(getCarList(), selectedfilter);
         });
       },
       child: Padding(
@@ -165,7 +184,7 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
           style: TextStyle(
             color: selectedfilter == filter
                 ? lightColorScheme.primary
-                : Colors.grey[300],
+                : Colors.grey[900],
             fontSize: 16,
             fontWeight:
                 selectedfilter == filter ? FontWeight.bold : FontWeight.normal,

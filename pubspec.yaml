@@ -40,6 +40,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   icons_plus: ^4.0.0
+  cloud_firestore: ^5.5.1
+  google_sign_in: ^6.2.2
+  share_plus: ^10.1.3
 
 
 dev_dependencies:

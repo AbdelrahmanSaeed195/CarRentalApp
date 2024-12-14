@@ -24,14 +24,14 @@ class CarentalApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        HomeScreen.id: (context) => const HomeScreen(),
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         RegisterScreen.id: (context) => const RegisterScreen(),
         AvailableCarScreen.id: (context) => const AvailableCarScreen(),
         ProfileScreen.id: (context) => const ProfileScreen(),
+        HomeScreen.id: (context) => const HomeScreen(),
       },
-      initialRoute: WelcomeScreen.id,
+      initialRoute: HomeScreen.id,
       title: 'CarRentalApp',
       debugShowCheckedModeBanner: false,
       theme: lightMode,

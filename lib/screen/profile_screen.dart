@@ -16,8 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final List<NavigationItem> navigationitems = getNavigationItemList();
   NavigationItem? selectItem;
-
-@override
+  @override
   void initState() {
     super.initState();
     setState(() {
@@ -29,13 +28,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: lightColorScheme.primary,
         elevation: 0,
       ),
       body: const Column(
         children: [
-           Center(
+          Center(
             child: Text(
               'Profile Screen',
               style: TextStyle(
@@ -48,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       bottomNavigationBar: Container(
         height: 70,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: lightColorScheme.primary,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(25),
             topRight: Radius.circular(25),
@@ -69,7 +68,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-   List<Widget> buildNavigationItems() {
+
+  List<Widget> buildNavigationItems() {
     List<Widget> list = [];
     for (var i = 0; i < navigationitems.length; i++) {
       list.add(buildNavigationItem(navigationitems[i]));

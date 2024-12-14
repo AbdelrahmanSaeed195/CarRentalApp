@@ -27,8 +27,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: lightColorScheme.primary,
         elevation: 0,
       ),
       body: const Column(
@@ -46,7 +46,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
       bottomNavigationBar: Container(
         height: 70,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: lightColorScheme.primary,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(25),
             topRight: Radius.circular(25),

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:project3/data.dart';
 import 'package:project3/screen/calender_screen.dart';
 import 'package:project3/screen/home_screen.dart';
-import 'package:project3/screen/profile_screen.dart';
 import 'package:project3/theme/theme.dart';
+
+import 'profile_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -15,8 +16,7 @@ class NotificationsScreen extends StatefulWidget {
 class _NotificationsScreenState extends State<NotificationsScreen> {
   final List<NavigationItem> navigationitems = getNavigationItemList();
   NavigationItem? selectItem;
-
-@override
+  @override
   void initState() {
     super.initState();
     setState(() {
@@ -24,13 +24,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     });
   }
 
-  
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        backgroundColor: Colors.transparent,
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: lightColorScheme.primary,
         elevation: 0,
       ),
       body: const Column(
@@ -45,10 +44,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ],
       ),
-        bottomNavigationBar: Container(
+      bottomNavigationBar: Container(
         height: 70,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: lightColorScheme.primary,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(25),
             topRight: Radius.circular(25),
@@ -69,7 +68,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       ),
     );
   }
-   List<Widget> buildNavigationItems() {
+
+  List<Widget> buildNavigationItems() {
     List<Widget> list = [];
     for (var i = 0; i < navigationitems.length; i++) {
       list.add(buildNavigationItem(navigationitems[i]));

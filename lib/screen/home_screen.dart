@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project3/screen/available_car_screen.dart';
 import 'package:project3/screen/book_car_screen.dart';
 import 'package:project3/screen/calender_screen.dart';
+import 'package:project3/screen/login_screen.dart';
 import 'package:project3/screen/notifications_screen.dart';
 import 'package:project3/screen/profile_screen.dart';
 import 'package:project3/widgets/car_widget.dart';
@@ -10,8 +13,11 @@ import 'package:project3/data.dart';
 import 'package:project3/widgets/dealers_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+  });
   static String id = "HomeScreen";
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -21,13 +27,36 @@ class _HomeScreenState extends State<HomeScreen> {
   NavigationItem? selectItem;
   List<Car> car = getCarList();
   List<Dealer> dealers = getDealerList();
+  List<Car> filteredCars = [];
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     setState(() {
       selectItem = navigationitems[0];
+      filteredCars = car;
     });
+    searchController.addListener(_filterCars);
+  }
+
+  void _filterCars() {
+    String query = searchController.text.toLowerCase();
+    setState(() {
+      filteredCars = car
+          .where((car) =>
+              car.brand.toLowerCase().contains(query) ||
+              car.model.toLowerCase().contains(query) ||
+              car.condition.toLowerCase().contains(query))
+          .toList();
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.removeListener(_filterCars);
+    searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -35,23 +64,30 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: lightColorScheme.primary,
         elevation: 0,
         title: const Text(
           'Car Rental App',
           style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
+              fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         centerTitle: false,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(
-              Icons.menu,
-              color: Colors.black,
-              size: 28,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              GoogleSignIn googleSignIn = GoogleSignIn();
+              googleSignIn.disconnect();
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushNamed(context, LoginScreen.id);
+            },
+            icon: const Padding(
+              padding: EdgeInsets.only(right: 16),
+              child: Icon(
+                Icons.exit_to_app,
+                size: 28,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
@@ -64,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: TextField(
+                controller: searchController,
                 decoration: InputDecoration(
                   hintText: "Search",
                   helperStyle: const TextStyle(fontSize: 16),
@@ -77,10 +114,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   filled: true,
                   fillColor: Colors.grey[100],
                   contentPadding: const EdgeInsets.only(left: 30),
-                  suffixIcon: const Padding(
-                    padding: EdgeInsets.only(right: 24, left: 16),
-                    child: Icon(
-                      Icons.search,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      searchController.clear();
+                    },
+                    icon: Icon(
+                      searchController.text.isNotEmpty
+                          ? Icons.clear
+                          : Icons.search,
                       color: Colors.black,
                       size: 24,
                     ),
@@ -115,26 +156,26 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                'View all',
-                                style: TextStyle(
-                                  color: lightColorScheme.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 12,
-                                color: lightColorScheme.primary,
-                              )
-                            ],
-                          )
+                          // Row(
+                          //   children: [
+                          //     Text(
+                          //       'View all',
+                          //       style: TextStyle(
+                          //         color: lightColorScheme.primary,
+                          //         fontSize: 14,
+                          //         fontWeight: FontWeight.bold,
+                          //       ),
+                          //     ),
+                          //     const SizedBox(
+                          //       width: 8,
+                          //     ),
+                          //     Icon(
+                          //       Icons.arrow_forward_ios,
+                          //       size: 12,
+                          //       color: lightColorScheme.primary,
+                          //     )
+                          //   ],
+                          // )
                         ],
                       ),
                     ),
@@ -220,26 +261,26 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                'View all',
-                                style: TextStyle(
-                                  color: lightColorScheme.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 12,
-                                color: lightColorScheme.primary,
-                              )
-                            ],
-                          )
+                          // Row(
+                          //   children: [
+                          //     Text(
+                          //       'View all',
+                          //       style: TextStyle(
+                          //         color: lightColorScheme.primary,
+                          //         fontSize: 14,
+                          //         fontWeight: FontWeight.bold,
+                          //       ),
+                          //     ),
+                          //     const SizedBox(
+                          //       width: 8,
+                          //     ),
+                          //     Icon(
+                          //       Icons.arrow_forward_ios,
+                          //       size: 12,
+                          //       color: lightColorScheme.primary,
+                          //     )
+                          //   ],
+                          // )
                         ],
                       ),
                     ),
@@ -260,9 +301,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: Container(
-        height: 70,
+        height: 60,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: lightColorScheme.primary,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(25),
             topRight: Radius.circular(25),
@@ -286,19 +327,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> buildDeals() {
     List<Widget> list = [];
-    for (var i = 0; i < car.length; i++) {
+    for (var i = 0; i < filteredCars.length; i++) {
       list.add(GestureDetector(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => BookCarScreen(
-                car: car[i],
+                car: filteredCars[i],
               ),
             ),
           );
         },
-        child: buildCar(car[i], i),
+        child: buildCar(filteredCars[i], i),
       ));
     }
     return list;
@@ -358,7 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 item.iconData,
                 color: selectItem == item
                     ? lightColorScheme.primary
-                    : Colors.grey[400],
+                    : Colors.white,
                 size: 28,
               ),
             ),

@@ -1,15 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:project3/helper/show_Message.dart';
 import 'package:project3/screen/home_screen.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:project3/widgets/custom_password_field.dart';
 import 'package:project3/widgets/custom_scaffold.dart';
 import '../widgets/customformfeild.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
   static String id = "Register Screen";
+
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
@@ -19,30 +23,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isloading = false;
   GlobalKey<FormState> formKey = GlobalKey();
   bool agreePersonalData = true;
-  final fullNameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmpasswordController = TextEditingController();
-  final idController = TextEditingController();
-  final phoneController = TextEditingController();
-  void showErrorMessage(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.deepPurple,
-          title: Center(
-            child: Text(
-              message,
-              style: const TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmpasswordController = TextEditingController();
+  TextEditingController idController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -190,41 +176,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   isloading = true;
                                   setState(() {});
 
-                                    try {
-                                      await registerUser();
+                                  try {
+                                    await registerUser();
                                     Navigator.pushNamed(context, HomeScreen.id);
                                   } on FirebaseAuthException catch (e) {
                                     if (e.code == 'weak-password') {
-                                      // ShowSnakBar(context,
-                                      //     'The password provided is too weak.');
-                                      showErrorMessage(
-                                          'The password provided is too weak.');
+                                      showMessage(
+                                          context,'The password provided is too weak.');
                                     } else if (e.code ==
                                         'email-already-in-use') {
-                                      // ShowSnakBar(context,
-                                      //     'The account already exists for that email.');
-                                      showErrorMessage(
-                                          'The account already exists for that email.');
+                                      showMessage(
+                                          context,'The account already exists for that email.');
                                     }
                                   } catch (e) {
                                     print(e);
-                                    // ShowSnakBar(context, 'there was an error');
-                                    showErrorMessage('there was an error');
+                                    showMessage(context,'there was an error');
                                   }
                                   isloading = false;
                                   setState(() {});
                                 } else if (!agreePersonalData) {
-                                  // ShowSnakBar(context,
-                                  //     'please agree the processing of personal data');
-                                  showErrorMessage(
-                                      'please agree the processing of personal data');
+                                  showMessage(
+                                     context,'please agree the processing of personal data');
                                 }
                               },
                               child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Register')),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Register'),
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -271,15 +251,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> registerUser() async {
     if (passwordController.text == confirmpasswordController.text) {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-      // ShowSnakBar(context, 'The email success.');
-      showErrorMessage('The email success.');
+      String userid = FirebaseAuth.instance.currentUser!.uid;
+
+      addUserDelails(
+        fullNameController.text,
+        emailController.text,
+        int.parse(idController.text),
+        int.parse(phoneController.text),
+        DateTime.now(),
+        userid,
+      );
     } else {
-      // ShowSnakBar(context, 'Password don\'t match');
-      showErrorMessage('Password don\'t match');
+      showMessage(context,'Password don\'t match');
     }
   }
+
+  Future addUserDelails(String fullName, String email, int id, int phone,
+      DateTime createdAt, String userid) async {
+    try {
+      await FirebaseFirestore.instance.collection("users").doc(userid).set({
+        'FullName': fullName,
+        'Email': email,
+        'Id': id,
+        'Phone': phone,
+        'createdAt': createdAt,
+      });
+    } on Exception catch (e) {
+      showMessage(context,"Error ${e.toString()}");
+    }
+  }
+
+  // bool passwordConfirmed() {
+  //   if (passwordController.text == confirmpasswordController.text) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 }

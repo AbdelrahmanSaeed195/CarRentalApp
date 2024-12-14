@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '864450009953',
     projectId: 'carental-app-53efe',
     storageBucket: 'carental-app-53efe.firebasestorage.app',
+    iosClientId: '864450009953-avk8d46ireg3b5p3l8sh399q41l2rfoq.apps.googleusercontent.com',
     iosBundleId: 'com.example.project3',
   );
+
 }
