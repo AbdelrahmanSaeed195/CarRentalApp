@@ -27,10 +27,7 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
 
   List<Car> applyFilter(List<Car> cars, Filter? filter) {
     if (filter == null) return cars;
-
     switch (filter.name) {
-      case "Best Match":
-        return List.from(cars);
       case "Highest Price":
         cars.sort((a, b) => b.price.compareTo(a.price));
         return List.from(cars);
@@ -69,17 +66,70 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
-        height: 100,
-        decoration: const BoxDecoration(
+        height: 70,
+        width: 450,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
           color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, -2),
+            ),
+          ],
         ),
         child: Row(
           children: [
             buildFilterIcon(),
+            const SizedBox(width: 45),
             Row(
               children: filters.map((filter) => _buildFilter(filter)).toList(),
-            )
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildFilterIcon() {
+    return Container(
+      width: 50,
+      height: 50,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+          color: lightColorScheme.primary,
+          borderRadius: const BorderRadius.all(Radius.circular(15))),
+      child: const Center(
+        child: Icon(
+          Icons.filter_list,
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilter(Filter filter) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedfilter = filter;
+          filteredCars = applyFilter(allCars, selectedfilter);
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(right: 16),
+        child: Text(
+          filter.name,
+          style: TextStyle(
+            color: selectedfilter == filter
+                ? lightColorScheme.primary
+                : Colors.grey[900],
+            fontSize: 16,
+            fontWeight:
+                selectedfilter == filter ? FontWeight.bold : FontWeight.normal,
+          ),
         ),
       ),
     );
@@ -142,49 +192,6 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
           Icons.keyboard_arrow_left,
           color: Colors.black,
           size: 28,
-        ),
-      ),
-    );
-  }
-
-  Widget buildFilterIcon() {
-    return Container(
-      width: 50,
-      height: 50,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-          color: lightColorScheme.primary,
-          borderRadius: const BorderRadius.all(Radius.circular(15))),
-      child: const Center(
-        child: Icon(
-          Icons.filter_list,
-          color: Colors.white,
-          size: 24,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilter(Filter filter) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedfilter = filter;
-          filteredCars = applyFilter(allCars, selectedfilter);
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(right: 16),
-        child: Text(
-          filter.name,
-          style: TextStyle(
-            color: selectedfilter == filter
-                ? lightColorScheme.primary
-                : Colors.grey[900],
-            fontSize: 16,
-            fontWeight:
-                selectedfilter == filter ? FontWeight.bold : FontWeight.normal,
-          ),
         ),
       ),
     );

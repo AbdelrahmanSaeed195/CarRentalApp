@@ -5,6 +5,7 @@ import 'package:project3/screen/home_screen.dart';
 import 'package:project3/screen/login_screen.dart';
 import 'package:project3/screen/profile_screen.dart';
 import 'package:project3/screen/register_screen.dart';
+import 'package:project3/screen/updata_profile_screen.dart';
 import 'package:project3/screen/welcome_screen.dart';
 import 'package:project3/theme/theme.dart';
 import 'firebase_options.dart';
@@ -30,8 +31,9 @@ class CarentalApp extends StatelessWidget {
         AvailableCarScreen.id: (context) => const AvailableCarScreen(),
         ProfileScreen.id: (context) => const ProfileScreen(),
         HomeScreen.id: (context) => const HomeScreen(),
+        UpdataProfileScreen.id: (context) => const UpdataProfileScreen(),
       },
-      initialRoute: HomeScreen.id,
+      initialRoute: ProfileScreen.id,
       title: 'CarRentalApp',
       debugShowCheckedModeBanner: false,
       theme: lightMode,

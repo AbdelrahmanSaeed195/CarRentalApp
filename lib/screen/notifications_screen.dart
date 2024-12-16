@@ -18,7 +18,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   void initState() {
     super.initState();
     setState(() {
-      selectedItem = navigationItems[2];
+      selectedItem = navigationItems[1];
     });
   }
 
@@ -35,14 +35,18 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: lightColorScheme.primary,
         elevation: 0,
-      ),
-      body: const Center(
-        child: Text(
-          'Notification Screen ',
+        centerTitle: true,
+        title: const Text(
+          'Notification',
           style: TextStyle(
-            fontSize: 25,
+            fontSize: 26,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
+      ),
+      body: Column(
+        children: [],
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         navigationItems: navigationItems,

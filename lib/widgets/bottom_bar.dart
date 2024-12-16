@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project3/data.dart';
-import 'package:project3/screen/calendar_screen.dart';
 import 'package:project3/screen/home_screen.dart';
 import 'package:project3/screen/notifications_screen.dart';
 import 'package:project3/screen/profile_screen.dart';
@@ -15,8 +14,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
     required this.navigationItems,
     required this.selectedItem,
     required this.onItemSelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +48,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget _buildNavigationItem(NavigationItem item, BuildContext context) {
     final screens = [
       const HomeScreen(),
-      const CalendarScreen(),
+      // const CalendarScreen(),
       const NotificationsScreen(),
       const ProfileScreen(),
     ];

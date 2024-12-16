@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project3/theme/theme.dart';
 
 class Customformfeild extends StatelessWidget {
   Customformfeild(
@@ -7,14 +8,14 @@ class Customformfeild extends StatelessWidget {
       this.onChanged,
       this.hintText,
       required this.labeltext,
-      required this.controller,
+      this.controller,
       this.keyboardtype,
       this.maxLength});
   Function(String)? onChanged;
   String? hintText;
   final IconData? icon;
   Widget labeltext;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final keyboardtype;
   final maxLength;
   @override
@@ -49,7 +50,14 @@ class Customformfeild extends StatelessWidget {
           borderSide: const BorderSide(
             color: Colors.black12,
           ),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(100),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 2,
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(100),
         ),
       ),
     );

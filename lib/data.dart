@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
 
 class NavigationItem {
-  IconData iconData;
+  final IconData iconData;
   final String label;
 
-  NavigationItem(this.iconData, this.label);
+  const NavigationItem(this.iconData, this.label);
 }
 
 List<NavigationItem> getNavigationItemList() {
-  return <NavigationItem>[
-    NavigationItem(
-      Icons.home,
-      'Home'
-    ),
-    NavigationItem(
-      Icons.calendar_today,
-      'Calendar'
-    ),
-    NavigationItem(
-      Icons.notifications,
-      'Notifications'
-    ),
-    NavigationItem(
-      Icons.person,
-      'Profile'
-    ),
+  return const <NavigationItem>[
+    NavigationItem(Icons.home, 'Home'),
+    // NavigationItem(Icons.calendar_today, 'Calendar'),
+    NavigationItem(Icons.notifications, 'Notifications'),
+    NavigationItem(Icons.person, 'Profile'),
   ];
 }
 
@@ -283,7 +271,6 @@ class Filter {
 
 List<Filter> getFilterList() {
   return <Filter>[
-    Filter("Best Match"),
     Filter("Highest Price"),
     Filter("Lowest Price"),
   ];

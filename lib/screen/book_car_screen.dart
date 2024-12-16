@@ -190,7 +190,7 @@ class _BookCarScreenState extends State<BookCarScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           buildPriceOption("12", "4.350"),
-          buildPriceOption("6", "4.800"),
+          buildPriceOption("6", "4.80"),
           buildPriceOption(
             "1",
             "5.100",
@@ -277,9 +277,9 @@ class _BookCarScreenState extends State<BookCarScreen> {
         const SizedBox(height: 4),
         Row(
           children: [
-            Text("USD ${_prices[_selectedPeriod]}",
+            Text("USD ${_prices[_selectedPeriod]} XRP",
                 style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
             const SizedBox(width: 8),
             Text("Per Month",
                 style: TextStyle(color: Colors.grey[900], fontSize: 14)),
@@ -353,7 +353,7 @@ class PriceOptionWidget extends StatelessWidget {
               style:
                   const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text("USD $price", style: const TextStyle(fontSize: 14)),
+          Text("USD $price XRP", style: const TextStyle(fontSize: 14)),
         ],
       ),
     );
