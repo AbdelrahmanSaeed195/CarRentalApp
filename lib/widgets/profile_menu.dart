@@ -49,9 +49,9 @@ class ProfileMenuWidget extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1),
               ),
               child: const Icon(
-                Icons.arrow_right_sharp,
+                Icons.arrow_forward_ios,
                 color: Colors.grey,
-                size: 30,
+                size: 24,
               ),
             )
           : null,

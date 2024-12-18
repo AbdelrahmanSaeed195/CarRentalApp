@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project3/theme/theme.dart';
 
 class Customformfeild extends StatelessWidget {
   Customformfeild(
@@ -10,7 +9,7 @@ class Customformfeild extends StatelessWidget {
       required this.labeltext,
       this.controller,
       this.keyboardtype,
-      this.maxLength});
+      this.maxLength, this.validator});
   Function(String)? onChanged;
   String? hintText;
   final IconData? icon;
@@ -18,6 +17,7 @@ class Customformfeild extends StatelessWidget {
   final TextEditingController? controller;
   final keyboardtype;
   final maxLength;
+  final String? Function(String?)? validator;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -25,12 +25,13 @@ class Customformfeild extends StatelessWidget {
       keyboardType: keyboardtype,
       controller: controller,
       onChanged: onChanged,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'field is required';
-        }
-        return null;
-      },
+      validator: validator,
+      // validator: (value) {
+      //   if (value == null || value.isEmpty) {
+      //     return 'field is required';
+      //   }
+      //   return null;
+      // },
       decoration: InputDecoration(
         suffixIcon: Icon(
           icon,

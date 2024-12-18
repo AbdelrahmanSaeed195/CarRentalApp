@@ -73,6 +73,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 40,
                           ),
                           Customformfeild(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'field is required';
+                              }
+                              return null;
+                            },
                             keyboardtype: TextInputType.text,
                             controller: fullNameController,
                             hintText: 'Enter FullName',
@@ -83,6 +89,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 15,
                           ),
                           Customformfeild(
+                            validator: (value) => value!.isEmpty
+                                ? "Email cannot be empty"
+                                : (!value.contains('@')
+                                    ? "Enter a valid email"
+                                    : null),
                             keyboardtype: TextInputType.emailAddress,
                             controller: emailController,
                             hintText: 'Enter Email',
@@ -96,6 +107,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 15,
                           ),
                           Customformfeild(
+                            validator: (value) => value!.isEmpty
+                                ? "Phone cannot be empty"
+                                : (value.length != 11
+                                    ? "Enter a valid phone number"
+                                    : null),
                             maxLength: 11,
                             keyboardtype: TextInputType.phone,
                             controller: phoneController,
@@ -107,6 +123,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 15,
                           ),
                           Customformfeild(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'field is required';
+                              }
+                              return null;
+                            },
                             maxLength: 14,
                             keyboardtype: TextInputType.number,
                             controller: idController,
@@ -178,25 +200,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                   try {
                                     await registerUser();
-                                    Navigator.pushNamed(context, HomeScreen.id);
                                   } on FirebaseAuthException catch (e) {
                                     if (e.code == 'weak-password') {
-                                      showMessage(
-                                          context,'The password provided is too weak.');
+                                      showMessage(context,
+                                          'The password provided is too weak.');
                                     } else if (e.code ==
                                         'email-already-in-use') {
-                                      showMessage(
-                                          context,'The account already exists for that email.');
+                                      showMessage(context,
+                                          'The account already exists for that email.');
                                     }
                                   } catch (e) {
                                     print(e);
-                                    showMessage(context,'there was an error');
+                                    showMessage(context, 'there was an error');
                                   }
                                   isloading = false;
                                   setState(() {});
                                 } else if (!agreePersonalData) {
-                                  showMessage(
-                                     context,'please agree the processing of personal data');
+                                  showMessage(context,
+                                      'please agree the processing of personal data');
                                 }
                               },
                               child: GestureDetector(
@@ -251,23 +272,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> registerUser() async {
     if (passwordController.text == confirmpasswordController.text) {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      String userid = FirebaseAuth.instance.currentUser!.uid;
+      try {
+        // Register the user
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
 
-      addUserDelails(
-        fullNameController.text,
-        emailController.text,
-        int.parse(idController.text),
-        int.parse(phoneController.text),
-        DateTime.now(),
-        userid,
-      );
+        String userid = FirebaseAuth.instance.currentUser!.uid;
+
+        // Add user details to Firestore
+        await addUserDelails(
+          fullNameController.text,
+          emailController.text,
+          int.parse(idController.text),
+          int.parse(phoneController.text),
+          DateTime.now(),
+          userid,
+        );
+
+        // Clear controllers after successful registration
+        fullNameController.clear();
+        emailController.clear();
+        passwordController.clear();
+        confirmpasswordController.clear();
+        idController.clear();
+        phoneController.clear();
+
+        // Navigate to the home screen
+        Navigator.pushNamed(context, HomeScreen.id);
+      } catch (e) {
+        showMessage(context, 'Error: ${e.toString()}');
+      }
     } else {
-      showMessage(context,'Password don\'t match');
+      showMessage(context, 'Passwords don\'t match');
     }
   }
 
@@ -282,15 +321,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'createdAt': createdAt,
       });
     } on Exception catch (e) {
-      showMessage(context,"Error ${e.toString()}");
+      showMessage(context, "Error ${e.toString()}");
     }
   }
 
-  // bool passwordConfirmed() {
-  //   if (passwordController.text == confirmpasswordController.text) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+
 }

@@ -72,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      // bottomNavigationBar: bottomNavBar(),
       bottomNavigationBar: CustomBottomNavigationBar(
         navigationItems: navigationitems,
         selectedItem: selectedItem!,

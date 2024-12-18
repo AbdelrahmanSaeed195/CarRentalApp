@@ -31,6 +31,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           );
         },
       );
+       emailController.clear();
+
     } on FirebaseAuthException catch (e) {
       print(e);
       showDialog(
@@ -83,6 +85,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Customformfeild(
+                           validator: (value) => value!.isEmpty
+                          ? "Email cannot be empty"
+                          : (!value.contains('@') ? "Enter a valid email" : null),
                       controller: emailController,
                       hintText: 'Enter Email',
                       labeltext: const Text('Email'),

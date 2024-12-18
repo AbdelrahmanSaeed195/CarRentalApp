@@ -1,17 +1,93 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project3/helper/show_Message.dart';
 import 'package:project3/theme/theme.dart';
-import 'package:project3/widgets/custom_password_field.dart';
 import 'package:project3/widgets/customformfeild.dart';
 
 class UpdataProfileScreen extends StatefulWidget {
   const UpdataProfileScreen({super.key});
-  static String id = "ProfileScreen";
+  static String id = "Upadata ProfileScreen";
 
   @override
   State<UpdataProfileScreen> createState() => _UpdataProfileScreenState();
 }
 
 class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
+  final user = FirebaseAuth.instance.currentUser!;
+  final formKey = GlobalKey<FormState>();
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  bool isSaving = false;
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
+
+  void clearFields() {
+    fullNameController.clear();
+    emailController.clear();
+    phoneController.clear();
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .get();
+      if (doc.exists) {
+        final data = doc.data();
+        if (data != null) {
+          setState(() {
+            fullNameController.text = data['FullName'] ?? 'Not Provided';
+            emailController.text = data['Email'] ?? 'Not Provided';
+            phoneController.text = data['Phone']?.toString() ?? 'Not Provided';
+          });
+        }
+      }
+    } catch (e) {
+      showMessage(context, "Error fetching data: ${e.toString()}");
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    if (!formKey.currentState!.validate()) return;
+
+    setState(() {
+      isSaving = true;
+    });
+
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .update({
+        'FullName': fullNameController.text,
+        'Email': emailController.text,
+        'Phone': int.parse(phoneController.text),
+      });
+      showMessage(context, "Profile updated successfully!");
+      clearFields();
+    } catch (e) {
+      showMessage(context, "Error updating profile: ${e.toString()}");
+    } finally {
+      setState(() {
+        isSaving = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,77 +139,63 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
               ),
               const SizedBox(height: 50),
               Form(
+                key: formKey,
                 child: Column(
                   children: [
                     Customformfeild(
+                      controller: fullNameController,
                       keyboardtype: TextInputType.text,
                       hintText: 'Enter FullName',
                       labeltext: const Text('FullName'),
                       icon: Icons.perm_identity_sharp,
+                      validator: (value) =>
+                          value!.isEmpty ? "Full name cannot be empty" : null,
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 20),
                     Customformfeild(
+                      controller: emailController,
                       hintText: 'Enter Email',
                       labeltext: const Text('Email'),
                       icon: Icons.email_sharp,
+                      validator: (value) => value!.isEmpty
+                          ? "Email cannot be empty"
+                          : (!value.contains('@')
+                              ? "Enter a valid email"
+                              : null),
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 20),
                     Customformfeild(
+                      controller: phoneController,
                       maxLength: 11,
                       keyboardtype: TextInputType.phone,
                       hintText: 'Enter Phone',
                       labeltext: const Text('Phone'),
                       icon: Icons.phone,
-                    ),
-                    const SizedBox(height: 15),
-                    CustomPasswordField(
-                      hintText: 'Enter Confirm Password',
-                      labeltext: const Text('Confirm Password'),
+                      validator: (value) => value!.isEmpty
+                          ? "Phone cannot be empty"
+                          : (value.length != 11
+                              ? "Enter a valid phone number"
+                              : null),
                     ),
                     const SizedBox(height: 40),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, UpdataProfileScreen.id);
-                        },
-                        child: const Text(
-                          'Edit Profile',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        onPressed: isSaving ? null : _saveProfile,
+                        child: isSaving
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
+                                'Edit Profile',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text.rich(
-                          TextSpan(
-                              text: 'Joined ',
-                              style: TextStyle(fontSize: 15),
-                              children: [
-                                TextSpan(
-                                  text: '31 October 2023',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16),
-                                ),
-                              ]),
-                        ),
-                        ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.redAccent.withOpacity(0.1),
-                                elevation: 0,
-                                foregroundColor: Colors.red,
-                                side: BorderSide.none),
-                            child: Text('Delete'))
-                      ],
-                    )
                   ],
                 ),
               )

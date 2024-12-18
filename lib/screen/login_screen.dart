@@ -71,6 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 40,
                           ),
                           Customformfeild(
+                            validator: (value) => value!.isEmpty
+                                ? "Email cannot be empty"
+                                : (!value.contains('@')
+                                    ? "Enter a valid email"
+                                    : null),
                             controller: emailController,
                             hintText: 'Enter Email',
                             labeltext: const Text('Email'),
@@ -148,11 +153,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   setState(() {});
                                   try {
                                     await loginUser();
-                                    Navigator.pushNamed(context, HomeScreen.id);
+
                                     // showErrorMessage('The email Login.');
                                     // ShowSnakBar(context, 'The email Login.');
                                   } on FirebaseAuthException catch (e) {
-                                    showMessage(context,e.code);
+                                    showMessage(context, e.code);
                                     // if (e.code == 'wrong-password') {
                                     //  showErrorMessage('Wrong password provided for that user.');
                                     // } else if (e.code == ' user-not-found') {
@@ -160,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     //     'No user found for that email.');
                                     // }
                                   } catch (e) {
-                                    showMessage(context,'there was an error');
+                                    showMessage(context, 'there was an error');
                                   }
                                   isloading = false;
                                   setState(() {});
@@ -281,8 +286,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> loginUser() async {
-    UserCredential user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email!, password: password!);
+    try {
+      UserCredential user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email!, password: password!);
+      Navigator.pushNamed(context, HomeScreen.id);
+      emailController.clear();
+      passwordController.clear();
+    } catch (e) {
+      // Handle any errors and display a message
+      showMessage(context, "Error: ${e.toString()}");
+    }
   }
 
   Future signInWithGoogle() async {
