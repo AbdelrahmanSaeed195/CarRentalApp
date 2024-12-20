@@ -9,7 +9,6 @@ import 'package:project3/screen/register_screen.dart';
 import 'package:project3/screen/updata_profile_screen.dart';
 import 'package:project3/screen/welcome_screen.dart';
 import 'package:project3/theme/theme.dart';
-import 'package:project3/widgets/firebase_notifications.dart';
 import 'firebase_options.dart';
 
 void main() async {

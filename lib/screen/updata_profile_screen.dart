@@ -7,7 +7,7 @@ import 'package:project3/widgets/customformfeild.dart';
 
 class UpdataProfileScreen extends StatefulWidget {
   const UpdataProfileScreen({super.key});
-  static String id = "Upadata ProfileScreen";
+  static String id = "UpadataProfileScreen";
 
   @override
   State<UpdataProfileScreen> createState() => _UpdataProfileScreenState();
@@ -19,6 +19,7 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController idController = TextEditingController();
   bool isSaving = false;
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
     fullNameController.dispose();
     emailController.dispose();
     phoneController.dispose();
+    idController.dispose();
     super.dispose();
   }
 
@@ -38,6 +40,7 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
     fullNameController.clear();
     emailController.clear();
     phoneController.clear();
+    idController.clear();
   }
 
   Future<void> _fetchUserData() async {
@@ -53,6 +56,7 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
             fullNameController.text = data['FullName'] ?? 'Not Provided';
             emailController.text = data['Email'] ?? 'Not Provided';
             phoneController.text = data['Phone']?.toString() ?? 'Not Provided';
+            idController.text = data['Id']?.toString() ?? 'Not Provided';
           });
         }
       }
@@ -73,9 +77,10 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
           .collection("users")
           .doc(user.uid)
           .update({
-        'FullName': fullNameController.text,
-        'Email': emailController.text,
-        'Phone': int.parse(phoneController.text),
+        'FullName': fullNameController.text.trim(),
+        'Email': emailController.text.trim(),
+        'Phone': int.parse(phoneController.text.trim()),
+        'Id': int.parse(idController.text.trim()),
       });
       showMessage(context, "Profile updated successfully!");
       clearFields();
@@ -129,7 +134,7 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
                           borderRadius: BorderRadius.circular(100),
                           color: lightColorScheme.primary),
                       child: const Icon(
-                        Icons.camera_alt_sharp,
+                        Icons.add_photo_alternate_outlined,
                         color: Colors.black,
                         size: 20,
                       ),
@@ -175,6 +180,20 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
                           ? "Phone cannot be empty"
                           : (value.length != 11
                               ? "Enter a valid phone number"
+                              : null),
+                    ),
+                    const SizedBox(height: 20),
+                    Customformfeild(
+                      controller: idController,
+                      maxLength: 14,
+                      keyboardtype: TextInputType.number,
+                      hintText: 'Enter ID',
+                      labeltext: const Text('ID'),
+                      icon: Icons.phone,
+                      validator: (value) => value!.isEmpty
+                          ? "Id cannot be empty"
+                          : (value.length != 14
+                              ? "Enter a valid id number"
                               : null),
                     ),
                     const SizedBox(height: 40),

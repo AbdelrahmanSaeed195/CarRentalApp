@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   setState(() {});
                                   try {
                                     await loginUser();
-
+                                    
                                     // showErrorMessage('The email Login.');
                                     // ShowSnakBar(context, 'The email Login.');
                                   } on FirebaseAuthException catch (e) {

@@ -9,7 +9,8 @@ class Customformfeild extends StatelessWidget {
       required this.labeltext,
       this.controller,
       this.keyboardtype,
-      this.maxLength, this.validator});
+      this.maxLength,
+      this.validator});
   Function(String)? onChanged;
   String? hintText;
   final IconData? icon;

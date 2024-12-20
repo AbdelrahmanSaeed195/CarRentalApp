@@ -80,8 +80,65 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+ AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      iconTheme: const IconThemeData(color: Colors.white),
+      backgroundColor: lightColorScheme.primary,
+      elevation: 0,
+      title: const Text(
+        'Car Rental App',
+        style: TextStyle(
+            fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () async {
+            GoogleSignIn googleSignIn = GoogleSignIn();
+            googleSignIn.disconnect();
+            await FirebaseAuth.instance.signOut();
+            Navigator.pushNamed(context, LoginScreen.id);
+          },
+          icon: const Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Icon(
+              Icons.exit_to_app,
+              size: 28,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-
+Padding _buildSearchField() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextField(
+        controller: searchController,
+        decoration: InputDecoration(
+          hintText: "Search",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(width: 0, style: BorderStyle.none),
+          ),
+          filled: true,
+          fillColor: Colors.grey[100],
+          contentPadding: const EdgeInsets.only(left: 30),
+          suffixIcon: IconButton(
+            onPressed: () => searchController.clear(),
+            icon: Icon(
+              searchController.text.isNotEmpty ? Icons.clear : Icons.search,
+              color: Colors.black,
+              size: 24,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  /// Builds the main content of the home screen. This includes the top deals, 
+  /// available cars, and top dealers sections. The content is wrapped in a 
 
   SingleChildScrollView _buildBodyContent(BuildContext context) {
     return SingleChildScrollView(
@@ -107,18 +164,31 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Container _buildDealerList() {
-    return Container(
-      height: 150,
-      margin: const EdgeInsets.only(bottom: 16),
-      child: ListView(
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        children: buildDealers(),
+  Padding _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Colors.grey[400],
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
-
+  /// Builds a horizontal list of car deals. 
+  /// The list is wrapped in a SizedBox with a fixed height of 280.
+  SizedBox _buildCarDeals() {
+    return SizedBox(
+      height: 280,
+      child: ListView(
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        children: buildDeals(),
+      ),
+    );
+  }
   GestureDetector _buildAvailableCarsSection(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AvailableCarScreen.id),
@@ -178,94 +248,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  SizedBox _buildCarDeals() {
-    return SizedBox(
-      height: 280,
+
+  
+  Container _buildDealerList() {
+    return Container(
+      height: 150,
+      margin: const EdgeInsets.only(bottom: 16),
       child: ListView(
         physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
-        children: buildDeals(),
+        children: buildDealers(),
       ),
     );
   }
 
-  Padding _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Text(
-        title,
-        style: TextStyle(
-          color: Colors.grey[400],
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
+
+  List<Widget> buildDealers() {
+    return dealers
+        .map((dealer) => buildDealer(dealer, dealers.indexOf(dealer)))
+        .toList();
   }
 
-  Padding _buildSearchField() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: TextField(
-        controller: searchController,
-        decoration: InputDecoration(
-          hintText: "Search",
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
-            borderSide: const BorderSide(width: 0, style: BorderStyle.none),
-          ),
-          filled: true,
-          fillColor: Colors.grey[100],
-          contentPadding: const EdgeInsets.only(left: 30),
-          suffixIcon: IconButton(
-            onPressed: () => searchController.clear(),
-            icon: Icon(
-              searchController.text.isNotEmpty ? Icons.clear : Icons.search,
-              color: Colors.black,
-              size: 24,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  AppBar _buildAppBar(BuildContext context) {
-    return AppBar(
-      iconTheme: const IconThemeData(color: Colors.white),
-      backgroundColor: lightColorScheme.primary,
-      elevation: 0,
-      title: const Text(
-        'Car Rental App',
-        style: TextStyle(
-            fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-      centerTitle: false,
-      actions: [
-        IconButton(
-          onPressed: () async {
-            GoogleSignIn googleSignIn = GoogleSignIn();
-            googleSignIn.disconnect();
-            await FirebaseAuth.instance.signOut();
-            Navigator.pushNamed(context, LoginScreen.id);
-          },
-          icon: const Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(
-              Icons.exit_to_app,
-              size: 28,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+ 
 
   List<Widget> buildDeals() {
     return filteredCars.map((car) {
       return GestureDetector(
-        onTap: () => Navigator.push(
+        onTap: () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => BookCarScreen(car: car)),
         ),
@@ -274,10 +283,5 @@ class _HomeScreenState extends State<HomeScreen> {
     }).toList();
   }
 
-  List<Widget> buildDealers() {
-    return dealers
-        .map((dealer) => buildDealer(dealer, dealers.indexOf(dealer)))
-        .toList();
-  }
 
 }
