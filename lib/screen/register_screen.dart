@@ -284,10 +284,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
         // Add user details to Firestore
         await addUserDelails(
-          fullNameController.text,
-          emailController.text,
-          int.parse(idController.text),
-          int.parse(phoneController.text),
+          fullNameController.text.trim(),
+          emailController.text.trim(),
+          idController.text.trim(),
+          phoneController.text.trim(),
           DateTime.now(),
           userid,
         );
@@ -310,7 +310,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Future addUserDelails(String fullName, String email, int id, int phone,
+  Future addUserDelails(String fullName, String email, String id, String phone,
       DateTime createdAt, String userid) async {
     try {
       await FirebaseFirestore.instance.collection("users").doc(userid).set({
@@ -324,6 +324,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
       showMessage(context, "Error ${e.toString()}");
     }
   }
-
-
 }

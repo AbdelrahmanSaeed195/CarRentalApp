@@ -4,6 +4,7 @@ import 'package:project3/screen/available_car_screen.dart';
 import 'package:project3/screen/home_screen.dart';
 import 'package:project3/screen/login_screen.dart';
 import 'package:project3/screen/notifications_screen.dart';
+import 'package:project3/screen/CardDetailsScreen.dart';
 import 'package:project3/screen/profile_screen.dart';
 import 'package:project3/screen/register_screen.dart';
 import 'package:project3/screen/updata_profile_screen.dart';
@@ -36,8 +37,10 @@ class CarentalApp extends StatelessWidget {
         HomeScreen.id: (context) => const HomeScreen(),
         UpdataProfileScreen.id: (context) => const UpdataProfileScreen(),
         NotificationsScreen.id: (context) => const NotificationsScreen(),
+        CardDetailsScreen.id: (context) => CardDetailsScreen(),
+      
       },
-      initialRoute: LoginScreen.id,
+      initialRoute: WelcomeScreen.id,
       title: 'CarRentalApp',
       debugShowCheckedModeBanner: false,
       theme: lightMode,

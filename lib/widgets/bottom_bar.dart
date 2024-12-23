@@ -6,11 +6,9 @@ import 'package:project3/screen/profile_screen.dart';
 import 'package:project3/theme/theme.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
-  
   final List<NavigationItem> navigationItems;
   final NavigationItem selectedItem;
   final Function(NavigationItem) onItemSelected;
-
 
   const CustomBottomNavigationBar({
     required this.navigationItems,
@@ -22,7 +20,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
+      height: 50,
       decoration: BoxDecoration(
         color: lightColorScheme.primary,
         borderRadius: const BorderRadius.only(
@@ -51,7 +49,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     final screens = [
       const HomeScreen(),
       // const CalendarScreen(),
-       const NotificationsScreen(),
+      const NotificationsScreen(),
       const ProfileScreen(),
     ];
 

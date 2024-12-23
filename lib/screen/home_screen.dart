@@ -38,10 +38,12 @@ class _HomeScreenState extends State<HomeScreen> {
     String query = searchController.text.toLowerCase();
     setState(() {
       filteredCars = car
-          .where((car) =>
-              car.brand.toLowerCase().contains(query) ||
-              car.model.toLowerCase().contains(query) ||
-              car.condition.toLowerCase().contains(query))
+          .where(
+            (car) =>
+                car.brand.toLowerCase().contains(query) ||
+                car.model.toLowerCase().contains(query) ||
+                car.condition.toLowerCase().contains(query),
+          )
           .toList();
     });
   }
@@ -52,7 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
     searchController.dispose();
     super.dispose();
   }
-    void _onNavigationItemSelected(NavigationItem item) {
+
+  void _onNavigationItemSelected(NavigationItem item) {
     setState(() {
       selectedItem = item;
     });
@@ -80,7 +83,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
- AppBar _buildAppBar(BuildContext context) {
+
+  AppBar _buildAppBar(BuildContext context) {
     return AppBar(
       iconTheme: const IconThemeData(color: Colors.white),
       backgroundColor: lightColorScheme.primary,
@@ -111,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-Padding _buildSearchField() {
+  Padding _buildSearchField() {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: TextField(
@@ -137,8 +141,9 @@ Padding _buildSearchField() {
       ),
     );
   }
-  /// Builds the main content of the home screen. This includes the top deals, 
-  /// available cars, and top dealers sections. The content is wrapped in a 
+
+  /// Builds the main content of the home screen. This includes the top deals,
+  /// available cars, and top dealers sections. The content is wrapped in a
 
   SingleChildScrollView _buildBodyContent(BuildContext context) {
     return SingleChildScrollView(
@@ -177,7 +182,8 @@ Padding _buildSearchField() {
       ),
     );
   }
-  /// Builds a horizontal list of car deals. 
+
+  /// Builds a horizontal list of car deals.
   /// The list is wrapped in a SizedBox with a fixed height of 280.
   SizedBox _buildCarDeals() {
     return SizedBox(
@@ -189,6 +195,7 @@ Padding _buildSearchField() {
       ),
     );
   }
+
   GestureDetector _buildAvailableCarsSection(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AvailableCarScreen.id),
@@ -248,8 +255,6 @@ Padding _buildSearchField() {
     );
   }
 
-
-  
   Container _buildDealerList() {
     return Container(
       height: 150,
@@ -262,19 +267,16 @@ Padding _buildSearchField() {
     );
   }
 
-
   List<Widget> buildDealers() {
     return dealers
         .map((dealer) => buildDealer(dealer, dealers.indexOf(dealer)))
         .toList();
   }
 
- 
-
   List<Widget> buildDeals() {
     return filteredCars.map((car) {
       return GestureDetector(
-        onTap: () => Navigator.pushReplacement(
+        onTap: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => BookCarScreen(car: car)),
         ),
@@ -282,6 +284,4 @@ Padding _buildSearchField() {
       );
     }).toList();
   }
-
-
 }

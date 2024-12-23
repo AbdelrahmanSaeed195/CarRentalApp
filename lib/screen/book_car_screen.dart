@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project3/data.dart';
 import 'package:project3/helper/show_Message.dart';
+import 'package:project3/screen/payment_page.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -16,6 +18,7 @@ class _BookCarScreenState extends State<BookCarScreen> {
   int _currentImage = 0;
   int _selectedPeriod = 12;
   bool _isBookmarked = false;
+  final user = FirebaseAuth.instance.currentUser!;
 
   List<Widget> buildPageIndicator() {
     return List.generate(widget.car.images.length, (index) {
@@ -24,9 +27,9 @@ class _BookCarScreenState extends State<BookCarScreen> {
   }
 
   final Map<int, String> _prices = {
-    12: "4.350",
-    6: "4.800",
-    1: "5.100",
+    12: "4350",
+    6: "4800",
+    1: "5100",
   };
   Future<void> bookCar() async {
     try {
@@ -39,7 +42,13 @@ class _BookCarScreenState extends State<BookCarScreen> {
             DateTime.now().toIso8601String(), // Store the current date
       };
       await FirebaseFirestore.instance.collection('bookings').add(carBooking);
-      showMessage(context, 'Car booking successful!');
+      // showMessage(context, 'Car booking successful!');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PaymentPage(price: _prices[_selectedPeriod]!),
+        ),
+      );
     } catch (e) {
       showMessage(context, 'Failed to book car: $e');
     }
@@ -189,11 +198,11 @@ class _BookCarScreenState extends State<BookCarScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          buildPriceOption("12", "4.350"),
-          buildPriceOption("6", "4.80"),
+          buildPriceOption("12", "4350"),
+          buildPriceOption("6", "4800"),
           buildPriceOption(
             "1",
-            "5.100",
+            "5100",
           ),
         ],
       ),
@@ -300,11 +309,14 @@ class _BookCarScreenState extends State<BookCarScreen> {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 32),
         alignment: Alignment.center,
-        child: const Text("Book This Car",
-            style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18)),
+        child: const Text(
+          "Book This Car",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
       ),
     );
   }
@@ -353,7 +365,7 @@ class PriceOptionWidget extends StatelessWidget {
               style:
                   const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 4),
-          Text("USD $price XRP", style: const TextStyle(fontSize: 14)),
+          Text("USD $price XRP", style: const TextStyle(fontSize: 12)),
         ],
       ),
     );

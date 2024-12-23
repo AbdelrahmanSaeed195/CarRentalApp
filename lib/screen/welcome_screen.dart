@@ -47,10 +47,12 @@ class WelcomeScreen extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: CustomButton(
                       buttonText: 'Login',
-                      onTap: LoginScreen(),
+                      ontap: () {
+                        Navigator.pushNamed(context, LoginScreen.id);
+                      },
                       color: Colors.transparent,
                       textColor: Colors.white,
                     ),
@@ -58,7 +60,9 @@ class WelcomeScreen extends StatelessWidget {
                   Expanded(
                     child: CustomButton(
                       buttonText: 'Register',
-                      onTap: const RegisterScreen(),
+                      ontap: () {
+                        Navigator.pushNamed(context, RegisterScreen.id);
+                      },
                       color: Colors.white,
                       textColor: lightColorScheme.primary,
                     ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:project3/helper/show_Message.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:project3/widgets/customformfeild.dart';
@@ -21,6 +22,7 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController idController = TextEditingController();
   bool isSaving = false;
+  bool isdelete = false;
   @override
   void initState() {
     super.initState();
@@ -55,8 +57,8 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
           setState(() {
             fullNameController.text = data['FullName'] ?? 'Not Provided';
             emailController.text = data['Email'] ?? 'Not Provided';
-            phoneController.text = data['Phone']?.toString() ?? 'Not Provided';
-            idController.text = data['Id']?.toString() ?? 'Not Provided';
+            phoneController.text = data['Phone'] ?? 'Not Provided';
+            idController.text = data['Id'] ?? 'Not Provided';
           });
         }
       }
@@ -79,8 +81,8 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
           .update({
         'FullName': fullNameController.text.trim(),
         'Email': emailController.text.trim(),
-        'Phone': int.parse(phoneController.text.trim()),
-        'Id': int.parse(idController.text.trim()),
+        'Phone': phoneController.text.trim(),
+        'Id': idController.text.trim(),
       });
       showMessage(context, "Profile updated successfully!");
       clearFields();
@@ -90,6 +92,21 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
       setState(() {
         isSaving = false;
       });
+    }
+  }
+
+  Future<void> _deleteProfile() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .delete();
+      showMessage(context, "Profile deleted successfully!");
+      // FirebaseAuth.instance.signOut();
+      Navigator.of(context).pushReplacementNamed('/login');
+      clearFields();
+    } catch (e) {
+      showMessage(context, "Error deleting  profile: ${e.toString()}");
     }
   }
 
@@ -215,6 +232,37 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            text:
+                                ('Joined Date: ${DateFormat('yyyy-MM-dd').format(DateTime.now())}'),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _showConfirmationDialog(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent.withOpacity(0.1),
+                            elevation: 0,
+                            foregroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               )
@@ -223,5 +271,64 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _showConfirmationDialog(BuildContext context) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor: Colors.deepPurple,
+        title: const Text(
+          "Delete Profile",
+          style: TextStyle(
+              color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          "Are you sure you want to delete all related data?",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.deepPurple,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.white,
+            ),
+            child: const Text(
+              "Cancel",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 10),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.red,
+            ),
+            child: const Text(
+              "Delete",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      _deleteProfile();
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project3/helper/show_Message.dart';
 import 'package:project3/widgets/custom_scaffold.dart';
 import 'package:project3/widgets/customformfeild.dart';
 import '../theme/theme.dart';
@@ -23,34 +24,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: emailController.text.trim());
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const AlertDialog(
-            content: Text('Password Reset Link Sent! Check your Email'),
-          );
-        },
-      );
-       emailController.clear();
-
+      showMessage(context, 'Password Reset Link Sent! Check your Email');
+      emailController.clear();
     } on FirebaseAuthException catch (e) {
       print(e);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: lightColorScheme.primary,
-            // content: Text(e.message.toString()),
-            content: const Text(
-              'Please Enter your Email to resent password link',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25,
-              ),
-            ),
-          );
-        },
-      );
+      showMessage(context, 'Please Enter your Email to resent password link');
     }
   }
 
@@ -85,9 +63,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Customformfeild(
-                           validator: (value) => value!.isEmpty
+                      validator: (value) => value!.isEmpty
                           ? "Email cannot be empty"
-                          : (!value.contains('@') ? "Enter a valid email" : null),
+                          : (!value.contains('@')
+                              ? "Enter a valid email"
+                              : null),
                       controller: emailController,
                       hintText: 'Enter Email',
                       labeltext: const Text('Email'),

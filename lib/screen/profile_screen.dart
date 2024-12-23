@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:project3/data.dart';
 import 'package:project3/helper/show_Message.dart';
 import 'package:project3/screen/login_screen.dart';
+import 'package:project3/screen/CardDetailsScreen.dart';
 import 'package:project3/screen/profile_data_user.dart';
 import 'package:project3/screen/updata_profile_screen.dart';
 import 'package:project3/theme/theme.dart';
@@ -160,9 +161,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onpress: () {},
                         ),
                         ProfileMenuWidget(
-                          title: 'Billing Details',
+                          title: 'Card Details',
                           icon: Icons.wallet_outlined,
-                          onpress: () {},
+                          onpress: () {
+                            Navigator.pushNamed(
+                              context,
+                              CardDetailsScreen.id,
+                            );
+                          },
                         ),
                         ProfileMenuWidget(
                           title: 'Personal Data',
