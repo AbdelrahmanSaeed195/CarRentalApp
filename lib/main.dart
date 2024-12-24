@@ -38,7 +38,6 @@ class CarentalApp extends StatelessWidget {
         UpdataProfileScreen.id: (context) => const UpdataProfileScreen(),
         NotificationsScreen.id: (context) => const NotificationsScreen(),
         CardDetailsScreen.id: (context) => CardDetailsScreen(),
-      
       },
       initialRoute: WelcomeScreen.id,
       title: 'CarRentalApp',

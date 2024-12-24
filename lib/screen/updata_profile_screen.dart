@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:project3/helper/show_Message.dart';
+import 'package:project3/screen/login_screen.dart';
 import 'package:project3/theme/theme.dart';
 import 'package:project3/widgets/customformfeild.dart';
 
@@ -103,7 +104,7 @@ class _UpdataProfileScreenState extends State<UpdataProfileScreen> {
           .delete();
       showMessage(context, "Profile deleted successfully!");
       // FirebaseAuth.instance.signOut();
-      Navigator.of(context).pushReplacementNamed('/login');
+       Navigator.pushNamed(context, LoginScreen.id);
       clearFields();
     } catch (e) {
       showMessage(context, "Error deleting  profile: ${e.toString()}");

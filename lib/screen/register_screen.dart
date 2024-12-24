@@ -310,6 +310,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+
   Future addUserDelails(String fullName, String email, String id, String phone,
       DateTime createdAt, String userid) async {
     try {

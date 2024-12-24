@@ -62,75 +62,35 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
     );
   }
 
-  SingleChildScrollView _buildBottomNavigationBar() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Container(
-        height: 70,
-        width: 450,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            buildFilterIcon(),
-            const SizedBox(width: 45),
-            Row(
-              children: filters.map((filter) => _buildFilter(filter)).toList(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildFilterIcon() {
-    return Container(
-      width: 50,
-      height: 50,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-          color: lightColorScheme.primary,
-          borderRadius: const BorderRadius.all(Radius.circular(15))),
-      child: const Center(
-        child: Icon(
-          Icons.filter_list,
-          color: Colors.white,
-          size: 24,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFilter(Filter filter) {
+  GestureDetector _buildBackButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selectedfilter = filter;
-          filteredCars = applyFilter(allCars, selectedfilter);
-        });
+        Navigator.pop(context);
       },
-      child: Padding(
-        padding: const EdgeInsets.only(right: 16),
-        child: Text(
-          filter.name,
-          style: TextStyle(
-            color: selectedfilter == filter
-                ? lightColorScheme.primary
-                : Colors.grey[900],
-            fontSize: 16,
-            fontWeight:
-                selectedfilter == filter ? FontWeight.bold : FontWeight.normal,
-          ),
+      child: Container(
+        width: 45,
+        height: 45,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
         ),
+        child: const Icon(
+          Icons.keyboard_arrow_left,
+          color: Colors.black,
+          size: 28,
+        ),
+      ),
+    );
+  }
+
+  Text _buildTitle() {
+    return Text(
+      "Available Cars (${allCars.length})",
+      style: const TextStyle(
+        color: Colors.black,
+        fontSize: 36,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -164,34 +124,79 @@ class _AvailableCarScreenState extends State<AvailableCarScreen> {
     );
   }
 
-  Text _buildTitle() {
-    return Text(
-      "Available Cars (${allCars.length})",
-      style: const TextStyle(
-        color: Colors.black,
-        fontSize: 36,
-        fontWeight: FontWeight.bold,
+  Widget buildFilterIcon() {
+    return Container(
+      width: 50,
+      height: 50,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: lightColorScheme.primary,
+        borderRadius: const BorderRadius.all(
+          Radius.circular(15),
+        ),
+      ),
+      child: const Center(
+        child: Icon(
+          Icons.filter_list,
+          color: Colors.white,
+          size: 24,
+        ),
       ),
     );
   }
 
-  GestureDetector _buildBackButton(BuildContext context) {
+  Widget _buildFilter(Filter filter) {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context);
+        setState(
+          () {
+            selectedfilter = filter;
+            filteredCars = applyFilter(allCars, selectedfilter);
+          },
+        );
       },
+      child: Padding(
+        padding: const EdgeInsets.only(right: 16),
+        child: Text(
+          filter.name,
+          style: TextStyle(
+            color: selectedfilter == filter
+                ? lightColorScheme.primary
+                : Colors.grey[900],
+            fontSize: 16,
+            fontWeight:
+                selectedfilter == filter ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+
+  SingleChildScrollView _buildBottomNavigationBar() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Container(
-        width: 45,
-        height: 45,
+        height: 70,
+        width: 450,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: const BorderRadius.all(Radius.circular(15)),
-          border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, -2),
+            ),
+          ],
         ),
-        child: const Icon(
-          Icons.keyboard_arrow_left,
-          color: Colors.black,
-          size: 28,
+        child: Row(
+          children: [
+            buildFilterIcon(),
+            const SizedBox(width: 45),
+            Row(
+              children: filters.map((filter) => _buildFilter(filter)).toList(),
+            ),
+          ],
         ),
       ),
     );

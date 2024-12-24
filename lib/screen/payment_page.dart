@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project3/data.dart';
+import 'package:project3/helper/show_Message.dart';
+import 'package:project3/screen/home_screen.dart';
 import 'package:project3/theme/theme.dart';
-import 'package:project3/widgets/custom_button.dart';
 
 class PaymentPage extends StatefulWidget {
   final String price;
@@ -14,9 +16,51 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
+  final user = FirebaseAuth.instance.currentUser!;
   int type = 1;
   double rentFee = 15.00;
   void handleRadio(Object? e) => setState(() => type = e as int);
+  // double calculateTotalPayment() {
+  //   return widget.price * widget.selectPeriod + rentFee;
+  // }
+  Future<void> savePaymentData() async {
+    try {
+      String paymentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      // Create a reference to the 'payments' collection in Firestore
+      final payments =
+          FirebaseFirestore.instance.collection('payments').doc(paymentTime);
+
+      // Save the price along with payment method and other details
+      await payments.set({
+        'price': widget.price,
+        'payment_method': getPaymentMethod(),
+        'timestamp': FieldValue.serverTimestamp(),
+        'userId': user.email,
+      });
+      // Show a success message or navigate away
+      showMessage(context, 'Payment confirmed and saved to Firebase!');
+      // Navigator.pushNamed(context, HomeScreen.id);
+    } catch (e) {
+      // Handle errors
+      showMessage(context, 'Error saving payment: $e');
+    }
+  }
+
+  String getPaymentMethod() {
+    switch (type) {
+      case 1:
+        return 'Amazon Pay';
+      case 2:
+        return 'Credit Card';
+      case 3:
+        return 'PayPal';
+      case 4:
+        return 'Google Pay';
+      default:
+        return 'Unknown';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +69,7 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    // double totalPayment = calculateTotalPayment();
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
@@ -265,28 +310,49 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                 ),
                 SizedBox(height: 100),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Sub-Total',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    Text(
-                      'subtotal',
-                      //   '\$${subTotal.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 15),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(
+                //       'Selected Period',
+                //       style: TextStyle(
+                //         fontSize: 15,
+                //         fontWeight: FontWeight.w500,
+                //         color: Colors.grey,
+                //       ),
+                //     ),
+                //     Text(
+                //       '${widget.selectPeriod} months',
+                //       //   '\$${subTotal.toStringAsFixed(2)}',
+                //       style: TextStyle(
+                //         fontSize: 15,
+                //         fontWeight: FontWeight.w500,
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // SizedBox(height: 15),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(
+                //       'Sub-Total',
+                //       style: TextStyle(
+                //         fontSize: 15,
+                //         fontWeight: FontWeight.w500,
+                //         color: Colors.grey,
+                //       ),
+                //     ),
+                //     Text(
+                //       '\$${(widget.price * widget.selectPeriod).toStringAsFixed(2)}',
+                //       style: TextStyle(
+                //         fontSize: 15,
+                //         fontWeight: FontWeight.w500,
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // SizedBox(height: 15),
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //   children: [
@@ -322,7 +388,6 @@ class _PaymentPageState extends State<PaymentPage> {
                       ),
                     ),
                     Text(
-                      //   '\$${totalPayment.toStringAsFixed(2)}',
                       widget.price,
                       style: TextStyle(
                         fontSize: 15,
@@ -336,7 +401,7 @@ class _PaymentPageState extends State<PaymentPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: savePaymentData,
                     child: Text(
                       'Confirm Payment',
                       style:

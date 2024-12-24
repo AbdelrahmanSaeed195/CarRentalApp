@@ -33,15 +33,18 @@ class _BookCarScreenState extends State<BookCarScreen> {
   };
   Future<void> bookCar() async {
     try {
-      final carBooking = {
+      String bookingId = DateTime.now().millisecondsSinceEpoch.toString();
+      final carBooking =
+          FirebaseFirestore.instance.collection('bookings').doc(bookingId);
+
+      await carBooking.set({
         "carModel": widget.car.model,
         "carBrand": widget.car.brand,
         "selectedPeriod": _selectedPeriod,
         "price": _prices[_selectedPeriod],
-        "bookingDate":
-            DateTime.now().toIso8601String(), // Store the current date
-      };
-      await FirebaseFirestore.instance.collection('bookings').add(carBooking);
+        "bookingDate": DateTime.now().toIso8601String(),
+        'userId': user.email,
+      });
       // showMessage(context, 'Car booking successful!');
       Navigator.push(
         context,
@@ -269,19 +272,20 @@ class _BookCarScreenState extends State<BookCarScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          buildBookingDetails(),
+          buildBookingDetails(widget.car),
           buildBookButton(),
         ],
       ),
     );
   }
 
-  Widget buildBookingDetails() {
+  Widget buildBookingDetails(Car car) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("$_selectedPeriod Month",
+        Text(
+            "$_selectedPeriod ${car.condition == "Daily" ? "day" : car.condition == "Weekly" ? "week" : "month"}",
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
         Row(
@@ -290,8 +294,10 @@ class _BookCarScreenState extends State<BookCarScreen> {
                 style:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
             const SizedBox(width: 8),
-            Text("Per Month",
-                style: TextStyle(color: Colors.grey[900], fontSize: 14)),
+            Text(
+              "per ${car.condition == "Daily" ? "day" : car.condition == "Weekly" ? "week" : "month"}",
+              style: TextStyle(color: Colors.grey[900], fontSize: 14),
+            ),
           ],
         )
       ],
@@ -314,7 +320,7 @@ class _BookCarScreenState extends State<BookCarScreen> {
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 14,
           ),
         ),
       ),
