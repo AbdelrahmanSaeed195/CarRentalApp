@@ -44,11 +44,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             Expanded(
-              flex: 14,
+              flex: 16,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
+                  padding: const EdgeInsets.fromLTRB(25, 30, 25, 20),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -70,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 color: lightColorScheme.primary),
                           ),
                           const SizedBox(
-                            height: 40,
+                            height: 20,
                           ),
                           Customformfeild(
                             validator: (value) {
@@ -140,6 +140,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 15,
                           ),
                           CustomPasswordField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter Password';
+                              } else if (value.length < 8) {
+                                return 'Password lenght must be at least 8';
+                              }
+                              return null;
+                            },
                             onChanged: (data) {
                               password = data;
                             },
@@ -151,6 +159,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 15,
                           ),
                           CustomPasswordField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter Password';
+                              } else if (value.length < 8) {
+                                return 'Password lenght must be at least 8';
+                              } else if (value != passwordController.text) {
+                                return 'Passwords don\'t match';
+                              }
+                              return null;
+                            },
                             hintText: 'Enter Confirm Password',
                             labeltext: const Text('Confirm Password'),
                             controller: confirmpasswordController,
@@ -271,45 +289,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> registerUser() async {
-    if (passwordController.text == confirmpasswordController.text) {
-      try {
-        // Register the user
-        UserCredential userCredential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
-        );
+    // if (passwordController.text != confirmpasswordController.text) {
+    //   showMessage(context, 'Passwords don\'t match');
+    // } else {
+    try {
+      // Register the user
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
 
-        String userid = FirebaseAuth.instance.currentUser!.uid;
+      String userid = FirebaseAuth.instance.currentUser!.uid;
 
-        // Add user details to Firestore
-        await addUserDelails(
-          fullNameController.text.trim(),
-          emailController.text.trim(),
-          idController.text.trim(),
-          phoneController.text.trim(),
-          DateTime.now(),
-          userid,
-        );
+      // Add user details to Firestore
+      await addUserDelails(
+        fullNameController.text.trim(),
+        emailController.text.trim(),
+        idController.text.trim(),
+        phoneController.text.trim(),
+        DateTime.now(),
+        userid,
+      );
 
-        // Clear controllers after successful registration
-        fullNameController.clear();
-        emailController.clear();
-        passwordController.clear();
-        confirmpasswordController.clear();
-        idController.clear();
-        phoneController.clear();
+      // Clear controllers after successful registration
+      fullNameController.clear();
+      emailController.clear();
+      passwordController.clear();
+      confirmpasswordController.clear();
+      idController.clear();
+      phoneController.clear();
 
-        // Navigate to the home screen
-        Navigator.pushNamed(context, HomeScreen.id);
-      } catch (e) {
-        showMessage(context, 'Error: ${e.toString()}');
-      }
-    } else {
-      showMessage(context, 'Passwords don\'t match');
+      // Navigate to the home screen
+      Navigator.pushNamed(context, HomeScreen.id);
+    } catch (e) {
+      showMessage(context, 'Error: ${e.toString()}');
     }
+    // }
   }
-
 
   Future addUserDelails(String fullName, String email, String id, String phone,
       DateTime createdAt, String userid) async {

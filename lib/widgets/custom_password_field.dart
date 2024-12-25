@@ -6,13 +6,14 @@ class CustomPasswordField extends StatefulWidget {
       this.onChanged,
       this.controller,
       this.hintText,
-      required this.labeltext});
+      required this.labeltext, this.validator});
   Function(String)? onChanged;
   final TextEditingController? controller;
   String? hintText;
   TextEditingController confirmpasswordController = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
   Widget labeltext;
+   final String? Function(String?)? validator;
 
   @override
   State<CustomPasswordField> createState() => _CustomPasswordFieldState();
@@ -28,15 +29,8 @@ class _CustomPasswordFieldState extends State<CustomPasswordField> {
       onChanged: widget.onChanged,
       obscureText: obscureText,
       obscuringCharacter: '*',
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter Password';
-        } else if (value.length < 8) {
-          return 'Password lenght must be at least 8';
-        }
-        return null;
-      },
-      decoration: InputDecoration(
+      validator: widget.validator,
+       decoration: InputDecoration(
         suffixIcon: GestureDetector(
           onTap: () {
             setState(

@@ -91,6 +91,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             onChanged: (data) {
                               password = data;
                             },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter Password';
+                              } else if (value.length < 8) {
+                                return 'Password lenght must be at least 8';
+                              }
+                              return null;
+                            },
                             hintText: 'Enter Password',
                             labeltext: const Text(' Password'),
                             controller: passwordController,
@@ -147,13 +155,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () async {
-                                if (formKey.currentState!.validate() &&
-                                    rememberPassword) {
+                                if (formKey.currentState!.validate()) {
                                   isloading = true;
                                   setState(() {});
                                   try {
                                     await loginUser();
-                                    
                                     // showErrorMessage('The email Login.');
                                     // ShowSnakBar(context, 'The email Login.');
                                   } on FirebaseAuthException catch (e) {
@@ -252,7 +258,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                Navigator.pushNamed(context, RegisterScreen.id);
+                                  Navigator.pushNamed(
+                                      context, RegisterScreen.id);
                                 },
                                 child: Text(
                                   'Register',

@@ -38,8 +38,8 @@ class _PaymentPageState extends State<PaymentPage> {
         'userId': user.email,
       });
       // Show a success message or navigate away
-      showMessage(context, 'Payment confirmed and saved to Firebase!');
-      // Navigator.pushNamed(context, HomeScreen.id);
+      // showMessage(context, 'Payment confirmed and saved to Firebase!');
+      Navigator.pushNamed(context, HomeScreen.id);
     } catch (e) {
       // Handle errors
       showMessage(context, 'Error saving payment: $e');

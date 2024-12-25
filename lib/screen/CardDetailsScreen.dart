@@ -43,10 +43,10 @@ class CardDetailsScreen extends StatelessWidget {
                     cardExpiration: "05/2024",
                     cardHolder: "Abdelrahman Saeed",
                     cardNumber: "9874 4785 XXXX 6548"),
-                // _buildAddCardButton(
-                //   icon: Icon(Icons.add),
-                //   color: Color(0xFF081603),
-                // )
+                _buildAddCardButton(
+                  icon: Icon(Icons.add),
+                  color: Colors.black,
+                )
               ],
             ),
           ),
@@ -164,22 +164,22 @@ class CardDetailsScreen extends StatelessWidget {
   }
 
 // Build the FloatingActionButton
-  // Container _buildAddCardButton({
-  //   required Icon icon,
-  //   required Color color,
-  // }) {
-  //   return Container(
-  //     margin: const EdgeInsets.only(top: 24.0),
-  //     alignment: Alignment.center,
-  //     child: FloatingActionButton(
-  //       elevation: 2.0,
-  //       onPressed: () {
-  //         print("Add a credit card");
-  //       },
-  //       backgroundColor: color,
-  //       mini: false,
-  //       child: icon,
-  //     ),
-  //   );
-  // }
+  Container _buildAddCardButton({
+    required Icon icon,
+    required Color color,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(top: 24.0),
+      alignment: Alignment.center,
+      child: FloatingActionButton(
+        elevation: 2.0,
+        onPressed: () {
+          print("Add a credit card");
+        },
+        backgroundColor: color,
+        mini: false,
+        child: icon,
+      ),
+    );
+  }
 }

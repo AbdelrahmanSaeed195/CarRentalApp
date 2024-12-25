@@ -28,7 +28,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       emailController.clear();
     } on FirebaseAuthException catch (e) {
       print(e);
-      showMessage(context, 'Please Enter your Email to resent password link');
+      showMessage(context, 'Please Enter Actual Email to resent password link');
     }
   }
 
@@ -45,51 +45,54 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           ),
           Expanded(
             flex: 7,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
                 ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Customformfeild(
-                      validator: (value) => value!.isEmpty
-                          ? "Email cannot be empty"
-                          : (!value.contains('@')
-                              ? "Enter a valid email"
-                              : null),
-                      controller: emailController,
-                      hintText: 'Enter Email',
-                      labeltext: const Text('Email'),
-                      icon: Icons.email_sharp,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 40,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  MaterialButton(
-                    shape: const RoundedRectangleBorder(),
-                    onPressed: passwordReset,
-                    color: lightColorScheme.primary,
-                    child: const Text(
-                      'Reset Password',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Customformfeild(
+                        validator: (value) => value!.isEmpty
+                            ? "Email cannot be empty"
+                            : (!value.contains('@')
+                                ? "Enter a valid email"
+                                : null),
+                        controller: emailController,
+                        hintText: 'Enter Email',
+                        labeltext: const Text('Email'),
+                        icon: Icons.email_sharp,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    MaterialButton(
+                      shape: const RoundedRectangleBorder(),
+                      onPressed: passwordReset,
+                      color: lightColorScheme.primary,
+                      child: const Text(
+                        'Reset Password',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           )
